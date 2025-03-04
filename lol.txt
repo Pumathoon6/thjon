@@ -1,6 +1,6 @@
-nova.proxyvip24h.com:44333:9d8dnE:TxlKM57a
-echo.proxyvip24h.com:38311:9d8dnE:TxlKM57a
-echo.proxyvip24h.com:36221:9d8dnE:TxlKM57a
-echo.proxyvip24h.com:38899:9d8dnE:TxlKM57a
-echo.proxyvip24h.com:38051:9d8dnE:TxlKM57a
-nova.proxyvip24h.com:35255:9d8dnE:TxlKM57a
+nova.proxyvip24h.com:44333@9d8dnE:TxlKM57a
+echo.proxyvip24h.com:38311@9d8dnE:TxlKM57a
+echo.proxyvip24h.com:36221@9d8dnE:TxlKM57a
+echo.proxyvip24h.com:38899@9d8dnE:TxlKM57a
+echo.proxyvip24h.com:38051@9d8dnE:TxlKM57a
+nova.proxyvip24h.com:35255@9d8dnE:TxlKM57a
