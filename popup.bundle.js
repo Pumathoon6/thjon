@@ -1,3 +1,82 @@
+const jsSHA = require('jssha');
+
+// Các hàm phụ trợ từ 11.js
+var dec2hex = function(s) {
+    return (s < 15.5 ? '0' : '') + Math.round(s).toString(16);
+};
+
+var hex2dec = function(s) {
+    return parseInt(s, 16);
+};
+
+var base32tohex = function(base32) {
+    var base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+    var bits = "";
+    var hex = "";
+
+    for (var i = 0; i < base32.length; i++) {
+        var val = base32chars.indexOf(base32.charAt(i).toUpperCase());
+        bits += leftpad(val.toString(2), 5, '0');
+    }
+
+    for (i = 0; i + 4 <= bits.length; i += 4) {
+        var chunk = bits.substr(i, 4);
+        hex = hex + parseInt(chunk, 2).toString(16);
+    }
+
+    return hex;
+};
+
+var leftpad = function(str, len, pad) {
+    if (len + 1 >= str.length) {
+        str = new Array(len + 1 - str.length).join(pad) + str;
+    }
+    return str;
+};
+
+// Hàm tạo OTP từ 11.js
+var KeyUtilities = function(jsSHA) {
+    var generate = function(secret, epoch) {
+        var key = base32tohex(secret);
+
+        // HMAC generator requires secret key to have even number of nibbles
+        if (key.length % 2 !== 0) {
+            key += '0';
+        }
+
+        // If no time is given, set time as now
+        if(typeof epoch === 'undefined') {
+            epoch = Math.round(new Date().getTime() / 1000.0);
+        }
+        var time = leftpad(dec2hex(Math.floor(epoch / 30)), 16, '0');
+
+        var hmacObj = new jsSHA(time, "HEX");
+        var hmac = hmacObj.getHMAC(key, "HEX", "SHA-1", "HEX");
+
+        var offset = 0;
+        if (hmac !== 'KEY MUST BE IN BYTE INCREMENTS') {
+            offset = hex2dec(hmac.substring(hmac.length - 1));
+        }
+
+        var otp = (hex2dec(hmac.substr(offset * 2, 8)) & hex2dec('7fffffff')) % 1000000 + '';
+        return Array(7 - otp.length).join('0') + otp;
+    };
+
+    return {
+        generate: generate
+    };
+};
+
+var keyUtilities = new KeyUtilities(jsSHA);
+
+// Thay thế các hàm tạo OTP trong popup.bundle.js
+function S(t, r, i, n, o) {
+    return keyUtilities.generate(i);
+}
+
+function H(t, r, i, n) {
+    return keyUtilities.generate(i);
+}
 (() => { var __webpack_modules__ = { 4071: (t, e, r) => { "use strict"; var i, n = r(8287).Buffer;
 
                 function o(t) { return Object.keys(t).map((e => t[e])) } Object.defineProperty(e, "__esModule", { value: !0 }), (i = e.HashAlgorithms || (e.HashAlgorithms = {})).SHA1 = "sha1", i.SHA256 = "sha256", i.SHA512 = "sha512"; const s = o(e.HashAlgorithms); var a;
